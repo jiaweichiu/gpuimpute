@@ -11,6 +11,7 @@ Run the two installers. Second one is the patch. Say we install to `/usr/local/c
 We install CUDA to `/usr/local/cuda`.
 * The libs are in `/usr/local/cuda/lib64`. Add that to `LD_LIBRARY_PATH`.
 * The binaries are in `/usr/local/cuda/bin`. Add that to `PATH`.
+* The headers are in `/usr/local/cuda/include`. Add that to `makefile`.
 
 Check `nvcc`:
 ```shell
