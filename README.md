@@ -46,37 +46,29 @@ OPENBLASDIR = /opt/OpenBLAS
 CUDADIR = /usr/local/cuda-8.0
 ```
 
-
-
-make -j 10
-make lib -j 10
-make test -j 10
-make sparse-lib -j 10
-make sparse-test -j 10
+Then `make` and `make install`. Check out some of the test programs. Here is an example.
 ```
+$ ./testing_sgemm --lapack
+% MAGMA 2.2.0  compiled for CUDA capability >= 2.0, 32-bit magma_int_t, 64-bit pointer.
+% CUDA runtime 8000, driver 8000. OpenMP threads 8. 
+% device 0: GeForce GTX TITAN X, 1076.0 MHz clock, 12207.2 MiB memory, capability 5.2
+% Sat Jul 29 20:29:44 2017
+% Usage: ./testing_sgemm [options] [-h|--help]
 
-```
--- Found OpenMP
---     OpenMP_C_FLAGS   -fopenmp
---     OpenMP_CXX_FLAGS -fopenmp
--- Found CUDA 7.5
---     CUDA_INCLUDE_DIRS:   /usr/include
---     CUDA_CUDART_LIBRARY: /usr/lib/x86_64-linux-gnu/libcudart.so
---     compile for CUDA arch 2.x (Fermi)
---     compile for CUDA arch 3.0 (Kepler)
---     compile for CUDA arch 3.5 (Kepler)
--- Define -DHAVE_CUBLAS -DMIN_CUDA_ARCH=200
--- Searching for BLAS and LAPACK. To override, set LAPACK_LIBRARIES using ccmake.
--- A library with BLAS API found.
--- A library with LAPACK API found.
---     BLAS_LIBRARIES:      /usr/lib/libblas.so
---     LAPACK_LIBRARIES:    /usr/lib/liblapack.so;/usr/lib/libblas.so
--- MKLROOT not set. To change, set MKLROOT using ccmake.
--- Flags
---     CFLAGS        -std=c99 -fopenmp -Wall -Wno-unused-function
---     CXXFLAGS      -std=c++11 -fopenmp -Wall -Wno-unused-function
---     NFLAGS        -DHAVE_CUBLAS  -gencode arch=compute_20,code=sm_20 -gencode arch=compute_30,code=sm_30 -gencode arch=compute_35,code=sm_35 -gencode arch=compute_35,code=compute_35 
---     FFLAGS        -Dmagma_devptr_t="integer(kind=8)"
---     LIBS         tester;lapacktest;magma
---     LIBS_SPARSE  tester;lapacktest;magma;magma_sparse
+% If running lapack (option --lapack), MAGMA and cuBLAS error are both computed
+% relative to CPU BLAS result. Else, MAGMA error is computed relative to cuBLAS result.
+
+% transA = No transpose, transB = No transpose
+%   M     N     K   MAGMA Gflop/s (ms)  cuBLAS Gflop/s (ms)   CPU Gflop/s (ms)  MAGMA error  cuBLAS error
+%========================================================================================================
+ 1088  1088  1088   2205.31 (   1.17)    3728.02 (   0.69)    385.84 (   6.68)    1.13e-08     1.13e-08   ok
+ 2112  2112  2112   3107.60 (   6.06)    4018.22 (   4.69)    432.14 (  43.60)    1.06e-08     1.06e-08   ok
+ 3136  3136  3136   3288.46 (  18.76)    4961.51 (  12.43)    413.64 ( 149.12)    1.13e-08     1.14e-08   ok
+ 4160  4160  4160   3419.69 (  42.10)    5181.66 (  27.79)    390.72 ( 368.50)    1.02e-08     1.02e-08   ok
+ 5184  5184  5184   3338.83 (  83.45)    5740.53 (  48.54)    389.53 ( 715.30)    1.16e-08     1.16e-08   ok
+ 6208  6208  6208   4185.88 ( 114.31)    5945.47 (  80.48)    427.83 (1118.44)    1.14e-08     1.14e-08   ok
+ 7232  7232  7232   4099.77 ( 184.52)    5809.57 ( 130.22)    430.40 (1757.66)    1.06e-08     1.06e-08   ok
+ 8256  8256  8256   3997.71 ( 281.53)    5772.81 ( 194.96)    399.81 (2815.05)    1.23e-08     1.23e-08   ok
+ 9280  9280  9280   3929.56 ( 406.75)    5886.12 ( 271.55)    419.18 (3813.07)    1.72e-08     1.72e-08   ok
+10304 10304 10304   3589.88 ( 609.49)    5405.51 ( 404.77)    385.24 (5679.61)    2.05e-08     2.05e-08   ok
 ```
