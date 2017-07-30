@@ -1,18 +1,26 @@
 CUDADIR=/usr/local/cuda
 OPENBLASDIR=/opt/OpenBLAS
-MAGMADIR=/home/jchiu/magma-2.2.0/lib
+MAGMADIR=/usr/local/magma
 
-IFLAGS=-I/usr/local/include -I${CUDADIR}/include -I${OPENBLASDIR}/include
-CFLAGS=-O3 -fPIC -DNDEBUG -DADD_ -Wall -fopenmp -std=c++11 \
+IFLAGS=-I/usr/local/include \
+-I${CUDADIR}/include \
+-I${OPENBLASDIR}/include \
+-I${MAGMADIR}/include
+
+CFLAGS=-std=c++11 -O3 -fPIC -DNDEBUG -march=native -fopenmp -Wall \
 -DHAVE_CUBLAS -DMIN_CUDA_ARCH=200
-#CPUFLAGS=${CFLAGS} -march=native -fopenmp
+
 CPUFLAGS=${CFLAGS}
 GPUFLAGS=${CFLAGS}
-LFLAGS=-L${OPENBLASDIR}/lib -L${CUDADIR}/lib64 -L${MAGMADIR}/lib \
--lmagma -lopenblas \
--lopenblas -lcublas -lcusparse -lcudart -lcudadevrt \
--lcurand -lcusolver \
+
+LFLAGS=-L${OPENBLASDIR}/lib \
+-L${CUDADIR}/lib64 \
+-L${MAGMADIR}/lib \
+-lopenblas \
+-lmagma \
+-lcublas -lcusparse -lcudart -lcurand -lcusolver \
 -lglog -lrt -lpthread
+
 TEST_FLAGS=-lgtest -lgtest_main
 
 CC=g++

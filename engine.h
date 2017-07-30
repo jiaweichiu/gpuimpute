@@ -62,8 +62,6 @@ public:
   static float *device_s_one() { return instance()->device_s_one_; }
   static float *device_s_zero() { return instance()->device_s_zero_; }
 
-  static void Create(const EngineOptions &opt) { instance_ = new Engine(opt); }
-
 private:
   vector<cudaStream_t> stream_;
   curandGenerator_t curand_;
