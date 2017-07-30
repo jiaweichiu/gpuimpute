@@ -50,5 +50,11 @@ gpu_mat.o: mat.cu mat.h
 mat_test.o: mat_test.cc gpu_mat.o cpu_mat.o gpu_vec.o cpu_vec.o base.o
 	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) $(TESTFLAGS) -o $@
 
+qr.o: qr.cc qr.h
+	$(CC) qr.cc -c $(CPUFLAGS) $(IFLAGS) -o $@
+
+qr_test.o: qr_test.cc qr.o gpu_mat.o cpu_mat.o gpu_vec.o cpu_vec.o base.o
+	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) $(TESTFLAGS) -o $@
+
 clean:
 	rm -f *.o
