@@ -29,7 +29,7 @@ NVCC=nvcc
 base.o: base.cc base.h
 	$(CC) base.cc -c $(CPUFLAGS) $(IFLAGS) -o $@
 
-base_test.o: base_test.cc engine.o common.o
+base_test.o: base_test.cc base.o
 	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) $(TESTFLAGS) -o $@
 
 cpu_vec.o: vec.cc vec.h
@@ -37,6 +37,9 @@ cpu_vec.o: vec.cc vec.h
 
 gpu_vec.o: vec.cu vec.h
 	$(NVCC) vec.cu -c $(GPUFLAGS) $(IFLAGS) -o $@
+
+vec_test.o: vec_test.cc gpu_vec.o cpu_vec.o base.o
+	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) $(TESTFLAGS) -o $@
 
 clean:
 	rm -f *.o
