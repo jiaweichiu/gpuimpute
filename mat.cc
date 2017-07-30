@@ -1,6 +1,6 @@
+#include "mat.h"
 #include "base.h"
 #include "vec.h"
-#include "mat.h"
 
 namespace gi {
 
@@ -17,19 +17,19 @@ cusparseOperation_t CusparseTrans(Orientation o) {
 
 constexpr int kSampleAndUpdateMaxPower = 6;
 
-}  // namespace
+} // namespace
 
 SMat::SMat(int m, int n, MemType mem_type)
     : SVec(RoundToAlign(m) * n, mem_type), lda_(RoundToAlign(m)), m_(m), n_(n) {
   InitSEigenMap();
 }
 
-SMat::SMat(const SMat& src, MemType mem_type)
+SMat::SMat(const SMat &src, MemType mem_type)
     : SMat(src.m(), src.n(), mem_type) {
   CopyFrom(src);
 }
 
-SMat::SMat(int m, int n, float* data, int lda, MemType mem_type)
+SMat::SMat(int m, int n, float *data, int lda, MemType mem_type)
     : SVec(lda * n, data, mem_type), lda_(lda), m_(m), n_(n) {
   InitSEigenMap();
 }
@@ -40,7 +40,7 @@ void SMat::InitSEigenMap() {
   }
 }
 
-void SMat::CopyFrom(const SMat& src) {
+void SMat::CopyFrom(const SMat &src) {
   int m = min(m_, src.m());
   int n = min(n_, src.n());
   if (mem_type() == MEM_DEVICE) {
@@ -67,9 +67,9 @@ void SMat::CopyFrom(const SMat& src) {
   }
 }
 
-void SMat::Read(istream& is) {
-  for (int i = 0; i < m_; ++i) {    // For each row.
-    for (int j = 0; j < n_; ++j) {  // For each column.
+void SMat::Read(istream &is) {
+  for (int i = 0; i < m_; ++i) {   // For each row.
+    for (int j = 0; j < n_; ++j) { // For each column.
       float x;
       CHECK(is >> x);
       set(i, j, x);
@@ -77,17 +77,17 @@ void SMat::Read(istream& is) {
   }
 }
 
-void SMat::Write(ostream& os) const {
-  for (int i = 0; i < m_; ++i) {    // For each column.
-    for (int j = 0; j < n_; ++j) {  // For each row.
+void SMat::Write(ostream &os) const {
+  for (int i = 0; i < m_; ++i) {   // For each column.
+    for (int j = 0; j < n_; ++j) { // For each row.
       CHECK(os << get(i, j) << " ");
     }
     os << "\n";
   }
 }
 
-void SMat::SetToSum(float alpha, Orientation oa, const SMat& a, float beta,
-                    Orientation ob, const SMat& b) {
+void SMat::SetToSum(float alpha, Orientation oa, const SMat &a, float beta,
+                    Orientation ob, const SMat &b) {
   // Check that device types are consistent.
   CHECK_EQ(mem_type(), a.mem_type());
   CHECK_EQ(mem_type(), b.mem_type());
@@ -144,8 +144,8 @@ void SMat::SetToSum(float alpha, Orientation oa, const SMat& a, float beta,
   }
 }
 
-void SMat::SetToProduct(float alpha, Orientation oa, const SMat& a,
-                        Orientation ob, const SMat& b, float beta) {
+void SMat::SetToProduct(float alpha, Orientation oa, const SMat &a,
+                        Orientation ob, const SMat &b, float beta) {
   // Check that mem_types are consistent.
   CHECK_EQ(mem_type(), a.mem_type());
   CHECK_EQ(mem_type(), b.mem_type());
@@ -207,8 +207,8 @@ void SMat::SetToProduct(float alpha, Orientation oa, const SMat& a,
   }
 }
 
-void SMat::SetToProduct(float alpha, Orientation oa, const SSpMat& a,
-                        Orientation ob, const SMat& b, float beta) {
+void SMat::SetToProduct(float alpha, Orientation oa, const SSpMat &a,
+                        Orientation ob, const SMat &b, float beta) {
   // Check that mem_types are consistent.
   CHECK_EQ(mem_type(), a.mem_type());
   CHECK_EQ(mem_type(), b.mem_type());
@@ -269,7 +269,7 @@ void SMat::SetToProduct(float alpha, Orientation oa, const SSpMat& a,
   }
 }
 
-void SMat::SetToProduct(const SVec& d, const SMat& a) {
+void SMat::SetToProduct(const SVec &d, const SMat &a) {
   CHECK_EQ(d.mem_type(), mem_type());
   CHECK_EQ(a.mem_type(), mem_type());
 
@@ -286,7 +286,7 @@ void SMat::SetToProduct(const SVec& d, const SMat& a) {
   }
 }
 
-void SMat::SetToProduct(float alpha, const SMat& a) {
+void SMat::SetToProduct(float alpha, const SMat &a) {
   CHECK_EQ(a.mem_type(), mem_type());
 
   // Dimensions check.
@@ -304,7 +304,7 @@ void SMat::SetToProduct(float alpha, const SMat& a) {
   }
 }
 
-SSpMat::SSpMat(istream& is) {
+SSpMat::SSpMat(istream &is) {
   int m;
   int n;
   int nnz;
@@ -324,14 +324,14 @@ SSpMat::SSpMat(istream& is) {
   InitOnHost(m, n, nnz, row_ind, col, value);
 }
 
-SSpMat::SSpMat(int m, int n, int nnz, const vector<int>& row_ind,
-               const vector<int>& col, const vector<float>& value) {
+SSpMat::SSpMat(int m, int n, int nnz, const vector<int> &row_ind,
+               const vector<int> &col, const vector<float> &value) {
   InitOnHost(m, n, nnz, row_ind, col, value);
 }
 
-void SSpMat::InitOnHost(int m, int n, int nnz, const vector<int>& row_ind,
-                        const vector<int>& col, const vector<float>& value) {
-  mem_type_ = MEM_HOST;  // For now, only support host, not device.
+void SSpMat::InitOnHost(int m, int n, int nnz, const vector<int> &row_ind,
+                        const vector<int> &col, const vector<float> &value) {
+  mem_type_ = MEM_HOST; // For now, only support host, not device.
   m_ = m;
   n_ = n;
   nnz_ = nnz;
@@ -373,7 +373,7 @@ void SSpMat::InitOnHost(int m, int n, int nnz, const vector<int>& row_ind,
   value_.reset(new SVec(nnz_, a_->valuePtr(), MEM_HOST));
 }
 
-SSpMat::SSpMat(const SSpMat& src, MemType mem_type)
+SSpMat::SSpMat(const SSpMat &src, MemType mem_type)
     : mem_type_(mem_type), nnz_(src.nnz()), m_(src.m()), n_(src.n()) {
   if (mem_type == MEM_DEVICE) {
     // Host/device copying to device.
@@ -395,16 +395,16 @@ SSpMat::SSpMat(const SSpMat& src, MemType mem_type)
   }
 }
 
-SSpMat* SSpMat::ReadInput(const string& filename, MemType mem_type) {
+SSpMat *SSpMat::ReadInput(const string &filename, MemType mem_type) {
   ifstream fin(filename);
   unique_ptr<SSpMat> mat(new SSpMat(fin));
   if (mem_type == mat->mem_type()) {
     return mat.release();
   }
-  return new SSpMat(*mat, mem_type);  // Make a copy.
+  return new SSpMat(*mat, mem_type); // Make a copy.
 }
 
-void SSpMat::Write(ostream& os) const {
+void SSpMat::Write(ostream &os) const {
   CHECK_EQ(mem_type_, MEM_HOST);
   os << "m=" << m_ << " n=" << n_ << " nnz=" << nnz_ << "\n";
   os << *row_ind_ << "\n";
@@ -413,7 +413,7 @@ void SSpMat::Write(ostream& os) const {
   os << *value_ << "\n";
 }
 
-ostream& operator<<(ostream& os, const SSpMat& x) {
+ostream &operator<<(ostream &os, const SSpMat &x) {
   x.Write(os);
   return os;
 }
@@ -424,23 +424,23 @@ string SSpMat::DebugString() const {
   return os.str();
 }
 
-void SSpMat::CopyValuesFrom(const SSpMat& src) {
+void SSpMat::CopyValuesFrom(const SSpMat &src) {
   value_->CopyFrom(*(src.value_));
 }
 
-void SSpMat::CopyValuesFrom(const SVec& src) { value_->CopyFrom(src); }
+void SSpMat::CopyValuesFrom(const SVec &src) { value_->CopyFrom(src); }
 
 void SSpMat::ClearValues() { value_->Clear(); }
 
-void SSpMat::SampleAndUpdate(float alpha, const SMat& ut, const SMat& vt,
-                             const SVec& s, float beta) {
+void SSpMat::SampleAndUpdate(float alpha, const SMat &ut, const SMat &vt,
+                             const SVec &s, float beta) {
   SampleAndUpdateHelper(*row_ind_, *row_, *col_, *value_, alpha, ut, vt, s,
                         beta);
 }
 
-void SampleAndUpdateHelper(const IVec& row_ind, const IVec& row,
-                           const IVec& col, const SVec& value, float alpha,
-                           const SMat& ut, const SMat& vt, const SVec& s,
+void SampleAndUpdateHelper(const IVec &row_ind, const IVec &row,
+                           const IVec &col, const SVec &value, float alpha,
+                           const SMat &ut, const SMat &vt, const SVec &s,
                            float beta) {
   // Check that mem_types are consistent.
   CHECK_EQ(row_ind.mem_type(), ut.mem_type());
@@ -465,7 +465,7 @@ void SampleAndUpdateHelper(const IVec& row_ind, const IVec& row,
   } else {
     CHECK_LE(k, 1 << kSampleAndUpdateMaxPower);
     float buf[1 << kSampleAndUpdateMaxPower];
-    for (int i = 0; i < m; ++i) {  // Row of output is "i".
+    for (int i = 0; i < m; ++i) { // Row of output is "i".
       for (int l = 0; l < k; ++l) {
         buf[l] = alpha * ut.get(l, i) * s.get(l);
       }
@@ -481,11 +481,11 @@ void SampleAndUpdateHelper(const IVec& row_ind, const IVec& row,
           increment += (buf[l] * vt.get(l, column));
         }
         // Update the sparse matrix at row i, column col, inner index j.
-        float* x = value.data() + j;
+        float *x = value.data() + j;
         *x = *x * beta + increment;
       }
     }
   }
 }
 
-}  // namespace riftbolt
+} // namespace riftbolt

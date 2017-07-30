@@ -27,7 +27,7 @@ TEST(IVecTest, Basic) {
 TEST(IVecTest, NoOwn) {
   vector<int> h_v(3, 5);
   {
-    IVec h_v2(3, h_v.data(), MEM_HOST);  // We do not own data.
+    IVec h_v2(3, h_v.data(), MEM_HOST); // We do not own data.
     EXPECT_EQ(h_v2.DebugString(), "5 5 5 ");
     IVec d_v2(h_v2, MEM_DEVICE);
     d_v2.Clear();
@@ -85,7 +85,7 @@ TEST(SVecTest, MassiveFill) {
   }
 }
 
-void CheckMeanAndRMS(const SVec& x, const SVec& y, float expected_mean,
+void CheckMeanAndRMS(const SVec &x, const SVec &y, float expected_mean,
                      float expected_rms) {
   // Check that mean is close to 0.
   const float mu = y.Mean();
@@ -267,7 +267,7 @@ TEST(SVecTest, SoftThreshold) {
     istringstream is("0 1 -1 2 -2 3 -3 4 -4 5 -5");
     EXPECT_TRUE(is >> h_x);
   }
-  SVec d_x(h_x, MEM_DEVICE);  // Make a copy to device first.
+  SVec d_x(h_x, MEM_DEVICE); // Make a copy to device first.
 
   // Threshold on host copy.
   h_x.SoftThreshold(2.5);
@@ -288,7 +288,7 @@ TEST(SVecTest, HardThreshold) {
     istringstream is("0 1 -1 2 -2 3 -3 4 -4 5 -5");
     EXPECT_TRUE(is >> h_x);
   }
-  SVec d_x(h_x, MEM_DEVICE);  // Make a copy to device first.
+  SVec d_x(h_x, MEM_DEVICE); // Make a copy to device first.
 
   // Threshold on host copy.
   h_x.HardThreshold(2.5);
@@ -302,7 +302,7 @@ TEST(SVecTest, HardThreshold) {
   EXPECT_EQ(h_x.DebugString(), "0 0 0 0 0 3 -3 4 -4 5 -5 ");
 }
 
-}  // namespace gi
+} // namespace gi
 
 int main(int argc, char **argv) {
   gi::MainInit(argc, argv);

@@ -1,5 +1,5 @@
-#include "base.h"
 #include "vec.h"
+#include "base.h"
 
 namespace gi {
 
