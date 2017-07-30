@@ -28,8 +28,10 @@
 #include <eigen3/Eigen/SparseCore>
 
 #include <cublas_v2.h>
-#include <magma_lapack.h>
+// #include <magma_lapack.h>
 #include <magma_v2.h>
+
+#include <lapacke.h>
 
 namespace gi {
 
