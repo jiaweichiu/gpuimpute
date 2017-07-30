@@ -15,7 +15,8 @@ DIR=/home/jchiu/projects/gpuimpute/getdata/ml-20m
 --train_perm_filename=$DIR/train_1.perm \
 --use_gpu=true \
 --max_time=300 \
---log_every_n=10
+--log_every_n=20 \
+--accelerated=true
 ```
 
 # Run more to collect data

@@ -1,11 +1,13 @@
 CUDADIR=/usr/local/cuda
 OPENBLASDIR=/opt/OpenBLAS
 MAGMADIR=/usr/local/magma
+EIGENDIR=/usr/local/include/eigen3
 
 IFLAGS=-I/usr/local/include \
 -I${CUDADIR}/include \
 -I${OPENBLASDIR}/include \
--I${MAGMADIR}/include
+-I${MAGMADIR}/include \
+-I${EIGENDIR}
 
 CFLAGS=-std=c++11 -O3 -DNDEBUG \
 -DHAVE_CUBLAS -DMIN_CUDA_ARCH=200
@@ -66,6 +68,9 @@ impute.o: impute.cc impute.h
 	$(CC) impute.cc -c $(CPUFLAGS) $(IFLAGS) -o $@
 
 impute_main.o: impute_main.cc impute.o qr.o svd.o gpu_mat.o cpu_mat.o gpu_vec.o cpu_vec.o base.o
+	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) -o $@
+
+sgd_main.o: sgd_main.cc base.o
 	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) -o $@
 
 clean:

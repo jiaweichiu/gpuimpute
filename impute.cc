@@ -49,6 +49,7 @@ Impute::Impute(const ImputeOptions &opt) : opt_(opt) {
   LOG(INFO) << "Read: " << opt.train_filename;
   LOG(INFO) << "Number of nonzero elements: " << a_train_->nnz();
   LOG(INFO) << "use_gpu=" << opt.use_gpu;
+  LOG(INFO) << "accelerated=" << opt.accelerated;
   LOG(INFO) << "randomize_init=" << opt_.randomize_init;
 }
 
@@ -172,8 +173,8 @@ void Impute::RunNormal() {
     // Update transpose of train matrix by permuting.
     a_train_t_->value()->SetToPermute(*train_perm_, *(a_train_->value()));
 
-    // Create random matrix.
-    kn.RandNormal(0, 1);
+    // Create random matrix if necessary, as test vectors for rnadomized SVD.
+    ResetTestMatrix(iter, vt, &kn);
 
     // Apply U.diag(S).VT to random matrix.
     // Apply sparse matrix. We apply to random matrix transposed because that is
