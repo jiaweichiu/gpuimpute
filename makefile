@@ -19,7 +19,7 @@ LFLAGS=-L${OPENBLASDIR}/lib \
 -lopenblas \
 -lmagma \
 -lcublas -lcusparse -lcudart -lcurand -lcusolver \
--lglog -lrt -lpthread
+-lglog -lgflags -lrt -lpthread
 
 TESTFLAGS=-lgtest -lgtest_main
 
@@ -62,7 +62,10 @@ svd.o: svd.cc svd.h
 svd_test.o: svd_test.cc svd.o gpu_mat.o cpu_mat.o gpu_vec.o cpu_vec.o base.o
 	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) $(TESTFLAGS) -o $@
 
-impute.o: impute.cc qr.o svd.o gpu_mat.o cpu_mat.o gpu_vec.o cpu_vec.o base.o
+impute.o: impute.cc impute.h
+	$(CC) impute.cc -c $(CPUFLAGS) $(IFLAGS) -o $@
+
+impute_main.o: impute.cc qr.o svd.o gpu_mat.o cpu_mat.o gpu_vec.o cpu_vec.o base.o
 	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) -o $@
 
 clean:

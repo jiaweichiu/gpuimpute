@@ -29,6 +29,7 @@ limitations under the License.
 #include <string>
 #include <vector>
 
+#include <gflags/gflags.h>
 #include <glog/logging.h>
 
 #include <cublas_v2.h>

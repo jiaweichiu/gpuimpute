@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#include "impute.h"
 #include "base.h"
 #include "mat.h"
 #include "qr.h"
@@ -20,25 +21,6 @@ limitations under the License.
 #include "vec.h"
 
 namespace gi {
-
-struct ImputeOptions {
-  float sv_threshold = 5.0;
-  int k = 32;
-  int num_gram = 1;
-  bool use_gpu = false;
-  string init = "zero";
-  string output_filename;
-  string train_filename;
-  string train_t_filename;
-  string test_filename;
-  string train_perm_filename;
-
-  // Evaluate error, state etc every this many iterations.
-  int log_every_n = 100;
-
-  // Max running time in seconds.
-  double max_time = 300;
-};
 
 void Impute(const ImputeOptions &opt) {
   CHECK_GT(opt.sv_threshold, 0);
@@ -104,21 +86,19 @@ void Impute(const ImputeOptions &opt) {
   // ========== End ==========
   LOG(INFO) << "SoftImpute\n";
   LOG(INFO) << "use_gpu=" << opt.use_gpu;
-  cout << " init=" << opt.init << "\n";
-  if (opt.init == "zero") {
+  LOG(INFO) << "randomize_init=" << opt.randomize_init;
+  if (!opt.randomize_init) {
     // Zero initialization.
     ut.Clear();
     vt.Clear();
     s.Clear();
-  } else if (opt.init == "rand") {
+  } else {
     // RandUniform initialization.
     ut.RandUniform();
     vt.RandUniform();
     ut.SetToProduct(1.0 / static_cast<float>(k), ut);
     vt.SetToProduct(1.0 / static_cast<float>(k), vt);
     s.Fill(1.0);
-  } else {
-    LOG(FATAL) << "Unknown --init: " << opt.init;
   }
 
   // Backup sparse matrix values.
@@ -151,10 +131,10 @@ void Impute(const ImputeOptions &opt) {
       s_min.push_back(h_s.get(k - 1));
 
       // Output.
-      cout << "Iter: " << l_iter.back();
-      cout << " SMin: " << s_min.back();
-      cout << " Time elapsed: " << timing.back() << " sec";
-      cout << " RMSE: " << rmse.back() << "\n";
+      LOG(INFO) << "Iter: " << l_iter.back();
+      LOG(INFO) << " SMin: " << s_min.back();
+      LOG(INFO) << " Time elapsed: " << timing.back() << " sec";
+      LOG(INFO) << " RMSE: " << rmse.back() << "\n";
 
       // Reset timer.
       timer.reset();
@@ -241,10 +221,13 @@ void Impute(const ImputeOptions &opt) {
     ut.SetToProduct(1.0, NO_TRANS, kk, NO_TRANS, qt, 0);
     // ========== End ==========
 
-    // Soft threshold.
-    s.SoftThreshold(opt.sv_threshold);
+    if (opt.soft_threshold) {
+      s.SoftThreshold(opt.sv_threshold);
+    } else {
+      s.HardThreshold(opt.sv_threshold);
+    }
   }
-  cout << "Total time taken: " << time_elapsed << "\n";
+  LOG(INFO) << "Total time taken: " << time_elapsed << "\n";
 
   CHECK_EQ(timing.size(), rmse.size());
   CHECK_EQ(timing.size(), l_iter.size());
