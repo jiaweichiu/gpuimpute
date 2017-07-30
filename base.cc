@@ -22,6 +22,14 @@ void MainInit(int argc, char **argv) {
   google::InstallFailureSignalHandler();
 }
 
+Timer::Timer() : beg_(clock_::now()) {}
+
+void Timer::reset() { beg_ = clock_::now(); }
+
+double Timer::elapsed() const {
+  return std::chrono::duration_cast<second_>(clock_::now() - beg_).count();
+}
+
 Engine *Engine::instance_ = nullptr;
 
 Engine::Engine(const EngineOptions &opt) {

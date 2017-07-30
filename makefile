@@ -62,5 +62,8 @@ svd.o: svd.cc svd.h
 svd_test.o: svd_test.cc svd.o gpu_mat.o cpu_mat.o gpu_vec.o cpu_vec.o base.o
 	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) $(TESTFLAGS) -o $@
 
+impute.o: impute.cc qr.o svd.o gpu_mat.o cpu_mat.o gpu_vec.o cpu_vec.o base.o
+	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) -o $@
+
 clean:
 	rm -f *.o
