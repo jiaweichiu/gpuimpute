@@ -9,6 +9,9 @@ namespace gi {
 Engine *Engine::instance_ = nullptr;
 
 Engine::Engine(const EngineOptions &opt) {
+  CHECK(!instance_);
+  instance_ = this;
+
   CUDA_CALL(cudaSetDevice(opt.device));
   stream_.resize(opt.num_streams);
   for (int i = 0; i < opt.num_streams; ++i) {
@@ -28,8 +31,6 @@ Engine::Engine(const EngineOptions &opt) {
   cusparseSetMatType(cusparse_desc_, CUSPARSE_MATRIX_TYPE_GENERAL);
   cusparseSetMatIndexBase(cusparse_desc_, CUSPARSE_INDEX_BASE_ZERO);
 
-  magma_init();
-
   // Keep "one" in device memory.
   CUDA_CALL(cudaMalloc(&device_s_one_, sizeof(float)));
   float one = 1.0;
@@ -44,13 +45,17 @@ Engine::Engine(const EngineOptions &opt) {
 
   // Not needed now. But in the future, if we use OpenMP, this will be useful.
   omp_set_num_threads(opt.omp_num_threads);
+
+   int result = magma_init();
+   LOG(INFO) << "~~~~~~~~~~~~~~" << result;
+
 }
 
 Engine::~Engine() {
+  magma_finalize();
+
   CUDA_CALL(cudaFree(device_s_one_));
   CUDA_CALL(cudaFree(device_s_zero_));
-
-  magma_finalize();
 
   for (cudaStream_t s : stream_) {
     CUDA_CALL(cudaStreamDestroy(s));

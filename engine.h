@@ -12,11 +12,11 @@
 #include <eigen3/Eigen/SparseCore>
 
 #include <cublas_v2.h>
-#include <magma.h>
-// #include <magma_lapack.h>
+#include <magma_v2.h>
+#include <magma_lapack.h>
 
-#include <cblas.h>
-#include <lapacke.h>
+// #include <cblas.h>
+// #include <lapacke.h>
 
 #include "common.h"
 
@@ -46,6 +46,7 @@ struct EngineOptions {
 
 class Engine {
 public:
+  Engine(const EngineOptions &opt);
   ~Engine();
 
   static Engine *instance() { return instance_; }
@@ -64,8 +65,6 @@ public:
   static void Create(const EngineOptions &opt) { instance_ = new Engine(opt); }
 
 private:
-  Engine(const EngineOptions &opt);
-
   vector<cudaStream_t> stream_;
   curandGenerator_t curand_;
   cublasHandle_t cublas_;

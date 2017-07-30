@@ -1,0 +1,38 @@
+# Prefer static links.
+
+# ln -s /opt/OpenBLAS openblas
+cc_library(
+  name = "openblas",
+  srcs = ["openblas/lib/libopenblas.a"],
+  hdrs = glob(["openblas/include/*.h"]),
+)
+
+# ln -s $HOME/magma-2.2.0 magma
+cc_library(
+  name = "magma",
+  srcs = ["magma/lib/libmagma.a"],
+  hdrs = glob(["magma/include/*.h"]),
+  deps = [
+    ":cuda",
+  ],
+)
+
+# CUDA is somewhat big. We will use shared libs instead.
+# Check .bazelrc.
+
+# Still need includes as bazel is a hermetic build system.
+# ln -s /usr/local/cuda cuda
+cc_library(
+  name = "cuda",
+  hdrs = glob(["cuda/include/*.h"]),
+)
+
+cc_binary(
+  name = "dummy_main",
+  srcs = ["dummy_main.cc"],
+  deps = [
+    ":cuda",
+    ":openblas",
+    ":magma",
+  ],
+)

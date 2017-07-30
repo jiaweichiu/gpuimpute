@@ -73,3 +73,19 @@ $ ./testing_sgemm --lapack
  9280  9280  9280   3929.56 ( 406.75)    5886.12 ( 271.55)    419.18 (3813.07)    1.72e-08     1.72e-08   ok
 10304 10304 10304   3589.88 ( 609.49)    5405.51 ( 404.77)    385.24 (5679.61)    2.05e-08     2.05e-08   ok
 ```
+
+## Install gtest
+
+Download from https://github.com/google/googletest/releases. Use `cmake` and `make install`.
+
+
+
+
+
+
+
+
+
+g++ dummy_main.cc -I/usr/local/cuda/include -I/usr/local/include -lmagma -L/usr/local/cuda/lib64 -lcublas -lpthread -fopenmp -lcudart -lcusparse
+
+Doesn't work

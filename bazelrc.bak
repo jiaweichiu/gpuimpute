@@ -1,0 +1,12 @@
+build \
+--copt="-fopenmp" \
+--copt="-DHAVE_CUBLAS" \
+--linkopt="-lglog -lm -lrt -lpthread" \
+--linkopt="-L/usr/local/cuda/lib64 -lcublas -lcusparse -lcudart -lcurand -lcusolver"
+
+build:opt \
+--copt="-g0" \
+--copt="-DNDEBUG" \
+--copt="-mtune=native" \
+--copt="-O3" \
+--copt="-ffast-math"
