@@ -1,5 +1,26 @@
 # gpuimpute
 
+# Run
+
+```
+export OPENBLAS_NUM_THREADS=1
+export OMP_NUM_THREADS=1
+
+DIR=/home/jchiu/projects/gpuimpute/getdata/ml-20m
+./impute_main.o \
+--output_filename=/tmp/a.txt \
+--train_filename=$DIR/train_1.csr \
+--train_t_filename=$DIR/train_1.t.csr \
+--test_filename=$DIR/validate_1.csr \
+--train_perm_filename=$DIR/train_1.perm \
+--use_gpu=true \
+--max_time=300 \
+--log_every_n=10
+```
+
+# Run more to collect data
+
+
 # Install
 
 ## Install CUDA 8.0
@@ -78,14 +99,6 @@ $ ./testing_sgemm --lapack
 
 Download from https://github.com/google/googletest/releases. Use `cmake` and `make install`.
 
+## Install glog, gflags
 
-
-
-
-
-
-
-
-g++ dummy_main.cc -I/usr/local/cuda/include -I/usr/local/include -lmagma -L/usr/local/cuda/lib64 -lcublas -lpthread -fopenmp -lcudart -lcusparse
-
-Doesn't work
+Just use synaptic.

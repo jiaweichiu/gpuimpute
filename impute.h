@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "base.h"
+#include "mat.h"
+#include "vec.h"
 
 namespace gi {
 
@@ -41,8 +43,33 @@ struct ImputeOptions {
 
   // If true, do soft threshold. Otherwise, do hard threshold.
   bool soft_threshold = true;
+
+  bool accelerated = false;
+
+  // Randomized SVD reuses the same test vectors usually.
+  // Every few iterations, we might want to reset these test vectors.
+  // Set to very large value if you do not want to reset.
+  int randn_iters = 1000;
 };
 
-void Impute(const ImputeOptions &opt);
+class Impute {
+public:
+  Impute(const ImputeOptions &opt);
+  void Run();
+
+private:
+  void RunNormal();
+  void RunAccelerated();
+
+  // Either copy from "vt" or reset by randn.
+  void ResetTestMatrix(int iter, const SMat &vt, SMat *out);
+
+  ImputeOptions opt_;
+  MemType mem_type_;
+  unique_ptr<SSpMat> a_train_;
+  unique_ptr<SSpMat> a_train_t_;
+  unique_ptr<SSpMat> a_test_;
+  unique_ptr<IVec> train_perm_;
+};
 
 } // namespace gi
