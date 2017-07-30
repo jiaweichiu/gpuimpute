@@ -41,5 +41,14 @@ gpu_vec.o: vec.cu vec.h
 vec_test.o: vec_test.cc gpu_vec.o cpu_vec.o base.o
 	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) $(TESTFLAGS) -o $@
 
+cpu_mat.o: mat.cc mat.h
+	$(CC) mat.cc -c $(CPUFLAGS) $(IFLAGS) -o $@
+
+gpu_mat.o: mat.cu mat.h
+	$(NVCC) mat.cu -c $(GPUFLAGS) $(IFLAGS) -o $@
+
+mat_test.o: mat_test.cc gpu_mat.o cpu_mat.o gpu_vec.o cpu_vec.o base.o
+	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) $(TESTFLAGS) -o $@
+
 clean:
 	rm -f *.o
