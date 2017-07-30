@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #include "base.h"
-#include "vec.h"
 #include "mat.h"
 #include "qr.h"
 #include "svd.h"
+#include "vec.h"
 
 namespace gi {
 
@@ -40,7 +40,7 @@ struct ImputeOptions {
   double max_time = 300;
 };
 
-void Impute(const ImputeOptions& opt) {
+void Impute(const ImputeOptions &opt) {
   CHECK_GT(opt.sv_threshold, 0);
 
   CHECK(!opt.output_filename.empty());
@@ -51,8 +51,8 @@ void Impute(const ImputeOptions& opt) {
 
   const MemType mem_type = opt.use_gpu ? MEM_DEVICE : MEM_HOST;
   unique_ptr<SSpMat> a_train(SSpMat::ReadInput(opt.train_filename, mem_type));
-  unique_ptr<SSpMat> a_train_t(SSpMat::ReadInput(opt.train_t_filename,
-                                               mem_type));
+  unique_ptr<SSpMat> a_train_t(
+      SSpMat::ReadInput(opt.train_t_filename, mem_type));
   unique_ptr<SSpMat> a_test(SSpMat::ReadInput(opt.test_filename, mem_type));
   unique_ptr<IVec> train_perm;
   {
