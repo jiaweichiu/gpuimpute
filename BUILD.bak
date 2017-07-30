@@ -1,3 +1,7 @@
+############################################################
+#### Need some work to get bazel working for this project.
+############################################################
+
 # Prefer static links.
 
 # ln -s /opt/OpenBLAS openblas

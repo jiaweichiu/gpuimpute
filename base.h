@@ -1,5 +1,21 @@
 #pragma once
 
+#include <algorithm>
+#include <array>
+#include <chrono>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <random>
+#include <sstream>
+#include <string>
+#include <vector>
+
+#include <glog/logging.h>
+
 #include <cublas_v2.h>
 #include <cuda_runtime.h>
 #include <curand.h>
@@ -12,15 +28,27 @@
 #include <eigen3/Eigen/SparseCore>
 
 #include <cublas_v2.h>
-#include <magma_v2.h>
 #include <magma_lapack.h>
-
-// #include <cblas.h>
-// #include <lapacke.h>
-
-#include "common.h"
+#include <magma_v2.h>
 
 namespace gi {
+
+using std::abs;
+using std::cout;
+using std::ifstream;
+using std::istream;
+using std::istringstream;
+using std::max;
+using std::min;
+using std::ostream;
+using std::ofstream;
+using std::ostringstream;
+using std::sqrt;
+using std::string;
+using std::unique_ptr;
+using std::vector;
+
+void MainInit(int argc, char **argv);
 
 struct EngineOptions {
   int omp_num_threads = 1;
@@ -81,5 +109,4 @@ private:
 // Returns number of blocks and number of threads given n things to work on.
 void BlocksThreads(int max_blocks, int max_threads, int n, int *num_blocks,
                    int *num_threads);
-
-} // namespace gi
+}

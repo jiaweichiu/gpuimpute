@@ -1,10 +1,11 @@
-#include "engine.h"
-
-#include <omp.h>
-
-#include "engine.h"
+#include "base.h"
 
 namespace gi {
+
+void MainInit(int argc, char **argv) {
+  google::InitGoogleLogging(argv[0]);
+  google::InstallFailureSignalHandler();
+}
 
 Engine *Engine::instance_ = nullptr;
 

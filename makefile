@@ -7,10 +7,10 @@ IFLAGS=-I/usr/local/include \
 -I${OPENBLASDIR}/include \
 -I${MAGMADIR}/include
 
-CFLAGS=-std=c++11 -O3 -fPIC -DNDEBUG -march=native -fopenmp -Wall \
+CFLAGS=-std=c++11 -O3 -DNDEBUG \
 -DHAVE_CUBLAS -DMIN_CUDA_ARCH=200
 
-CPUFLAGS=${CFLAGS}
+CPUFLAGS=${CFLAGS} -fPIC -march=native -fopenmp -Wall
 GPUFLAGS=${CFLAGS}
 
 LFLAGS=-L${OPENBLASDIR}/lib \
@@ -21,22 +21,22 @@ LFLAGS=-L${OPENBLASDIR}/lib \
 -lcublas -lcusparse -lcudart -lcurand -lcusolver \
 -lglog -lrt -lpthread
 
-TEST_FLAGS=-lgtest -lgtest_main
+TESTFLAGS=-lgtest -lgtest_main
 
 CC=g++
 NVCC=nvcc
 
-common.o: common.cc common.h
-	$(CC) common.cc -c $(CPUFLAGS) $(IFLAGS) -o $@
+base.o: base.cc base.h
+	$(CC) base.cc -c $(CPUFLAGS) $(IFLAGS) -o $@
 
-engine.o: engine.cc engine.h
-	$(CC) engine.cc -c $(CPUFLAGS) $(IFLAGS) -o $@
+base_test.o: base_test.cc engine.o common.o
+	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) $(TESTFLAGS) -o $@
 
-engine_test.o: engine_test.cc engine.o common.o
-	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) $(TEST_FLAGS) -o $@
+cpu_vec.o: vec.cc vec.h
+	$(CC) vec.cc -c $(CPUFLAGS) $(IFLAGS) -o $@
 
-dummy_main.o: dummy_main.cc engine.o common.o
-	$(CC) $^ $(CPUFLAGS) $(IFLAGS) $(LFLAGS) -o $@
+gpu_vec.o: vec.cu vec.h
+	$(NVCC) vec.cu -c $(GPUFLAGS) $(IFLAGS) -o $@
 
 clean:
 	rm -f *.o
