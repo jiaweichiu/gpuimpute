@@ -21,7 +21,7 @@ protected:
 class QRHelper {
 public:
   // magma_qr is ignored if a is on host memory.
-  QRHelper(SMat *a, int magma_qr=kDefaultMagmaQR);
+  QRHelper(SMat *a, int magma_qr = kDefaultMagmaQR);
   void Compute();
 
 private:
