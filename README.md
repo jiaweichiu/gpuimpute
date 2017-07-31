@@ -1,6 +1,20 @@
-# gpuimpute
+# Introduction
 
-# Run
+We are interested in GPU-accelerating the SoftImpute algorithm from Hastie et al's paper. This is a SVD-based collaborative filtering algorithm.
+
+We use randomized SVD as it seems to work better with GPUs. We use the accelerated proximal gradient method also mentioned in Quanming Yao et al's paper. See below for references.
+
+We compare these GPU-accelerated versions against the CPU version. We see that there is at least a 10X speedup. We also compare against a simple SGD implementation with a bit of tuning. All CPU implmentations, SoftImpute or SGD, use Eigen or BLAS. They are pretty efficient, to be fair.
+
+For the data, currently we only have the MovieLens 20M dataset. We split the data into 5 parts and use one part for measuring the error. (There is no validation set but we hardly do any tuning anyway.)
+
+The results seem to be that SGD is still faster, even when on single core.
+
+Our CPU is a I7-6700K. Our GPU is a Titan-X with 12G RAM.
+
+![plot](https://github.com/tinkerstash/gpuimpute/blob/master/results/plot1.png?raw=true)
+
+# Sample run command
 
 ```
 export OPENBLAS_NUM_THREADS=1
@@ -19,9 +33,6 @@ DIR=/home/jchiu/projects/gpuimpute/getdata/ml-20m
 --soft_threshold=true \
 --accelerated=true
 ```
-
-# Run more to collect data
-
 
 # Install
 
