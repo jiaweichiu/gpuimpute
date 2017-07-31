@@ -51,6 +51,7 @@ Impute::Impute(const ImputeOptions &opt) : opt_(opt) {
   LOG(INFO) << "use_gpu=" << opt.use_gpu;
   LOG(INFO) << "accelerated=" << opt.accelerated;
   LOG(INFO) << "randomize_init=" << opt_.randomize_init;
+  LOG(INFO) << "randn_iters=" << opt_.randn_iters;
   LOG(INFO) << "soft_threshold=" << opt_.soft_threshold;
 }
 

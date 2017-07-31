@@ -104,3 +104,12 @@ Download from https://github.com/google/googletest/releases. Use `cmake` and `ma
 ## Install glog, gflags
 
 Just use synaptic.
+
+# References
+
+On applying accelerated proximal gradient method to SoftImpute by Quanming Yao, James T. Kwok
+https://arxiv.org/abs/1703.05487
+https://github.com/quanmingyao/AIS-impute
+
+Spectral regularization algorithms for learning large incomplete matrices by Mazumder, Hastie, Tibshirani.
+https://web.stanford.edu/~hastie/Papers/mazumder10a.pdf
