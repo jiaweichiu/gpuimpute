@@ -14,8 +14,9 @@ DIR=/home/jchiu/projects/gpuimpute/getdata/ml-20m
 --test_filename=$DIR/validate_1.csr \
 --train_perm_filename=$DIR/train_1.perm \
 --use_gpu=true \
---max_time=300 \
---log_every_n=20 \
+--max_time=60 \
+--log_every_sec=5 \
+--soft_threshold=true \
 --accelerated=true
 ```
 

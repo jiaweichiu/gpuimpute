@@ -35,8 +35,8 @@ struct ImputeOptions {
   // Otherwise, just zero out.
   bool randomize_init = false;
 
-  // Evaluate error, state etc every this many iterations.
-  int log_every_n = 100;
+  // Evaluate error, state etc every this many seconds.
+  int log_every_sec = 100;
 
   // Max running time in seconds.
   double max_time = 300;
@@ -44,12 +44,12 @@ struct ImputeOptions {
   // If true, do soft threshold. Otherwise, do hard threshold.
   bool soft_threshold = true;
 
-  bool accelerated = false;
+  bool accelerated = true;
 
   // Randomized SVD reuses the same test vectors usually.
   // Every few iterations, we might want to reset these test vectors.
   // Set to very large value if you do not want to reset.
-  int randn_iters = 1000;
+  int randn_iters = 20;
 };
 
 class Impute {

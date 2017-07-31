@@ -26,7 +26,7 @@ DEFINE_string(test_filename,
               "/usr/local/google/home/jiawei/cfgpu/riftbolt/ml-1m/test.txt",
               "Filename for training dataset.");
 
-DEFINE_int32(log_every_n, 2, "Report test error every this many iterations.");
+DEFINE_int32(log_every_sec, 2, "Report test error every this many seconds.");
 
 DEFINE_string(output_filename, "", "Output file for stats.");
 
@@ -199,13 +199,14 @@ void Main() {
   Timer timer;
   vector<int> l_iter;
   vector<FloatType> rmse;
-  vector<float> timing;
-  float time_elapsed = 0;
+  vector<double> timing;
+  double time_elapsed = 0;
 
   for (int iter = 0;; ++iter) {
-    if ((iter % FLAGS_log_every_n) == 0) {
+    const double elapsed = timer.elapsed();
+    if (elapsed > FLAGS_log_every_sec || iter == 0) {
       // Get time elapsed.
-      time_elapsed += timer.elapsed();
+      time_elapsed += elapsed;
       timing.push_back(time_elapsed);
       l_iter.push_back(iter);
 

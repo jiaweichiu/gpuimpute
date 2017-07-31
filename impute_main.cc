@@ -37,7 +37,7 @@ DEFINE_double(sv_threshold, 10.0, "Singular value threshold.");
 DEFINE_int32(num_gram, 1,
              "Apply Gram matrix this many times. Recommend either 0 or 1.");
 
-DEFINE_int32(log_every_n, 200, "Report test error every this many iterations.");
+DEFINE_int32(log_every_sec, 3, "Log / evaluate every this many seconds.");
 
 DEFINE_string(init, "zero",
               "How to initialize U and V? Possibilities: zero, rand");
@@ -56,10 +56,17 @@ DEFINE_bool(randomize_init, false, "Randomize the initial solution?");
 
 DEFINE_bool(accelerated, true, "Use accelerated version?");
 
+DEFINE_int32(rng_seed, 3255245, "Seed for rng.");
+
+DEFINE_int32(
+    randn_iters, 20,
+    "Regenerate test matrix for randomized SVD every this many iterations.");
+
 namespace gi {
 
 void Main() {
   EngineOptions e_opt;
+  e_opt.rng_seed = FLAGS_rng_seed;
   Engine engine(e_opt);
   ImputeOptions opt;
   opt.output_filename = FLAGS_output_filename;
@@ -73,10 +80,11 @@ void Main() {
   opt.num_gram = FLAGS_num_gram;
   opt.use_gpu = FLAGS_use_gpu;
   opt.randomize_init = FLAGS_randomize_init;
-  opt.log_every_n = FLAGS_log_every_n;
+  opt.log_every_sec = FLAGS_log_every_sec;
   opt.max_time = FLAGS_max_time;
   opt.soft_threshold = FLAGS_soft_threshold;
   opt.accelerated = FLAGS_accelerated;
+  opt.randn_iters = FLAGS_randn_iters;
 
   Impute impute(opt);
   impute.Run();

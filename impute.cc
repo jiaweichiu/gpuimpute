@@ -51,13 +51,15 @@ Impute::Impute(const ImputeOptions &opt) : opt_(opt) {
   LOG(INFO) << "use_gpu=" << opt.use_gpu;
   LOG(INFO) << "accelerated=" << opt.accelerated;
   LOG(INFO) << "randomize_init=" << opt_.randomize_init;
+  LOG(INFO) << "soft_threshold=" << opt_.soft_threshold;
 }
 
 void Impute::Run() {
   if (opt_.accelerated) {
     RunAccelerated();
+  } else {
+    RunNormal();
   }
-  RunNormal();
 }
 
 void Impute::ResetTestMatrix(int iter, const SMat &vt, SMat *out) {
@@ -129,16 +131,16 @@ void Impute::RunNormal() {
   Timer timer;
   vector<int> l_iter;
   vector<float> rmse;
-  vector<float> timing;
+  vector<double> timing;
   vector<float> s_min; // Smallest singular value. Want this to be zero.
-  float time_elapsed = 0;
+  double time_elapsed = 0;
 
   for (int iter = 0;; ++iter) {
-    if ((iter % opt_.log_every_n) == 0) {
-      cudaDeviceSynchronize();
-
+    cudaDeviceSynchronize();
+    const double elapsed = timer.elapsed();
+    if (elapsed > opt_.log_every_sec || iter == 0) {
       // Get time elapsed.
-      time_elapsed += timer.elapsed();
+      time_elapsed += elapsed;
       timing.push_back(time_elapsed);
       l_iter.push_back(iter);
 
@@ -341,17 +343,17 @@ void Impute::RunAccelerated() {
   Timer timer;
   vector<int> l_iter;
   vector<float> rmse;
-  vector<float> timing;
+  vector<double> timing;
   vector<float> s_min; // Smallest singular value. Want this to be zero.
-  float time_elapsed = 0;
+  double time_elapsed = 0;
   int theta_c = 1;
 
   for (int iter = 0;; ++iter) {
-    if ((iter % opt_.log_every_n) == 0) {
-      cudaDeviceSynchronize();
-
+    cudaDeviceSynchronize();
+    const double elapsed = timer.elapsed();
+    if (elapsed > opt_.log_every_sec || iter == 0) {
       // Get time elapsed.
-      time_elapsed += timer.elapsed();
+      time_elapsed += elapsed;
       timing.push_back(time_elapsed);
       l_iter.push_back(iter);
 

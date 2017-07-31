@@ -24,7 +24,7 @@ for k in 8 16 32; do
     --max_time=$max_time \
     --train_filename=$DIR/train_${num}.csr \
     --test_filename=$DIR/validate_${num}.csr \
-    --log_every_sec=1 \
+    --log_every_sec=$log_every_sec \
     --k=$k \
     --output_filename=./$dataset/sgd_${num}_${k}.tsv
   done
