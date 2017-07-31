@@ -14,9 +14,11 @@ Our CPU is a I7-6700K. Our GPU is a Titan-X with 12G RAM.
 
 ![plot](https://github.com/tinkerstash/gpuimpute/blob/master/results/plot1.png?raw=true)
 
+The most tricky part of the GPU code is probably the evaluation of many short inner products. It seems to be the bottleneck, and we have to write a custom kernel to do that efficiently.
+
 # Sample run command
 
-```
+```shell
 export OPENBLAS_NUM_THREADS=1
 export OMP_NUM_THREADS=1
 
